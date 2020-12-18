@@ -1,0 +1,12 @@
+
+*.db
+*.opendb
+IW5CheatSP/.vs/IW5CheatSP/v15/.suo
+*.ipch
+*.tlog
+*.pdb
+*.dll
+*.iobj
+*.ipdb
+*.log
+*.obj
