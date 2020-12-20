@@ -14,7 +14,7 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD Reason, LPVOID lpVoid) {
 		MH_Initialize();
 
 		MH_CreateHookEx((void*)(0x00610200), &VM_Notify_Hook, &VM_Notify_Stub, "VM_Notify");
-
+		
 		MH_EnableHook(MH_ALL_HOOKS);
 
 	}

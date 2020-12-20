@@ -107,6 +107,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "C:\Users\DiiTz\Documents\GitHub\IW5CheatSP\IW5CheatSP\Release\IW5CheatSP.dll" "C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Modern Warfare 3\IW5CheatSP.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
