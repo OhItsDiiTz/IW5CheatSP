@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuiltinFunctions.cpp" />
     <ClCompile Include="GameFunctions.cpp" />
     <ClCompile Include="GameHooks.cpp" />
     <ClCompile Include="GameStructs.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="MinHook\trampoline.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuiltinFunctions.h" />
     <ClInclude Include="GameFunctions.h" />
     <ClInclude Include="GameHooks.h" />
     <ClInclude Include="GameStructs.h" />

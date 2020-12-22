@@ -2,6 +2,52 @@
 #include "IW5CheatSP.h"
 
 
+struct VariableValue;
+
+struct UiContext {
+
+};
+
+struct menuDef_t {
+
+};
+
+enum ButtonBits {
+	BUTTON_FIRE = 0x01,
+	BUTTON_AIM = 0x80800,
+	BUTTON_MELEE = 0x4,
+	BUTTON_TACTICAL = 0x8000,
+	BUTTON_LETHAL = 0x4000,
+	BUTTON_RELOAD = 0x10,
+	BUTTON_JUMP = 0x400,
+	BUTTON_SPRINT = 0x2002,
+};
+
+struct usercmd_s {
+	int serverTime;
+	int buttons;
+	int angles[3];
+	int weapon;
+	int offHand;
+	char forwardmove;
+	char rightmove;
+	char upmove;
+	char downmove;
+	char pitchmove;
+	char yawmove;
+	float gunPitch;
+	float gunYaw;
+	float gunXOfs;
+	float gunYOfs;
+	float gunZOfs;
+	__int16 meleeChargeYaw;
+	char meleeChargeDist;
+	char selectedLoc[2];
+	char selectedLocAngle;
+	char remoteControlAngles[2];
+};
+
+
 union DvarValue {
 	bool enabled;
 	int integer;
@@ -11,7 +57,6 @@ union DvarValue {
 	const char *string;
 	char color[4];
 };
-
 
 struct dvar_t {
 	const char *name;
@@ -210,6 +255,115 @@ struct entityShared_t {
 	int eventTime;
 };
 
+struct item_ent_t {
+	int ammoCount;
+	int clipAmmoCount[2];
+	int weapon;
+	bool dualWieldItem;
+	int shieldHealth;
+};
+
+struct spawner_ent_t {
+	int team;
+	int timestamp;
+	int index;
+	int count;
+};
+
+struct trigger_ent_t {
+	int threshold;
+	int accumulate;
+	int timestamp;
+	bool requireLookAt;
+};
+
+struct mover_positions_t {
+	float decelTime;
+	float speed;
+	float midTime;
+	float pos1[3];
+	float pos2[3];
+	float pos3[3];
+};
+
+struct mover_slidedata_t {
+	Bounds bounds;
+	float velocity[3];
+};
+
+union another_union {
+	mover_positions_t pos;
+	mover_slidedata_t slide;
+};
+
+struct mover_ent_t {
+	another_union ___u0;
+	mover_positions_t angle;
+};
+
+struct corpse_ent_t {
+	int removeTime;
+};
+
+struct actor_ent_t {
+	int spawnTime;
+};
+
+struct missile_fields_grenade {
+	float predictLandPos[3];
+	int predictLandTime;
+	float wobbleCycle;
+	float curve;
+};
+
+struct missile_fields_nonGrenade {
+	float curvature[3];
+	float targetEntOffset[3];
+	float targetPos[3];
+	float launchOrigin[3];
+	int stage;
+};
+
+
+union another_union_1 {
+	missile_fields_grenade grenade;
+	missile_fields_nonGrenade nonGrenade;
+};
+
+
+struct missile_ent_t {
+	int timestamp;
+	float time;
+	int timeOfBirth;
+	float travelDist;
+	float surfaceNormal[3];
+	int team;
+	int flags;
+	another_union_1 ___u7;
+};
+
+struct blend_ent_t {
+	float pos[3];
+	float vel[3];
+	float viewQuat[4];
+	bool changed;
+	float accelTime;
+	float decelTime;
+	float startTime;
+	float totalTime;
+};
+
+
+union some_ent_union {
+	item_ent_t item[2];
+	spawner_ent_t spawner;
+	trigger_ent_t trigger;
+	mover_ent_t mover;
+	corpse_ent_t corpse;
+	actor_ent_t actorInfo;
+	missile_ent_t missile;
+	blend_ent_t blend;
+};
 
 struct gentity_s
 {
@@ -242,12 +396,12 @@ struct gentity_s
 	int maxHealth;
 	int damage;
 	EntHandle grenadeActivator;
-	char __padding000[0x0060];
+	some_ent_union __us;
 	EntHandle missileTargetEnt;
 	EntHandle remoteControlledOwner;
 	unsigned __int16 lookAtText0;
 	unsigned __int16 lookAtText1;
-	unsigned __int64 snd_wait;
+	char snd_wait[6];
 	void *tagInfo;
 	gentity_s *tagChildren;
 	void *scripted;
@@ -311,6 +465,55 @@ struct scrVarPub_t {
 	const char *programBuffer;
 	unsigned short saveIdMap[36864];
 	unsigned short saveIdMapRev[36864];
+};
+
+struct scr_entref_t {
+	unsigned __int16 entnum;
+	unsigned __int16 classnum;
+};
+
+union VariableUnion {
+	int intValue;
+	unsigned int uintValue;
+	float floatValue;
+	unsigned int stringValue;
+	const float *vectorValue;
+	const char *codePosValue;
+	unsigned int pointerValue;
+	unsigned int entityOffset;
+};
+
+
+struct VariableValue {
+	VariableUnion u;
+	int type;
+};
+
+struct function_stack_t {
+	const char *pos;
+	unsigned int localId;
+	unsigned int localVarCount;
+	VariableValue *top;
+	VariableValue *startTop;
+};
+
+
+struct function_frame_t {
+	function_stack_t fs;
+	int topType;
+};
+
+
+struct scrVmPub_t {
+	unsigned int *localVars;
+	VariableValue *maxstack;
+	int function_count;
+	function_frame_t *function_frame;
+	VariableValue *top;
+	unsigned int inparamcount;
+	unsigned int outparamcount;
+	function_frame_t function_frame_start[32];
+	VariableValue stack[2048];
 };
 
 
@@ -843,24 +1046,6 @@ struct game_hudelem_s {
 };
 
 
-
-union VariableUnion {
-	int intValue;
-	unsigned int uintValue;
-	float floatValue;
-	unsigned int stringValue;
-	const float *vectorValue;
-	const char *codePosValue;
-	unsigned int pointerValue;
-	unsigned int entityOffset;
-};
-
-
-struct VariableValue {
-	VariableUnion u;
-	int type;
-};
-
 struct DBFile {
 private:
 	char __padding000[0x0004];
@@ -875,3 +1060,9 @@ public:
 	unsigned int memoryBufferSize;
 
 };
+
+
+
+
+extern scrVmPub_t * scrVmPub;
+

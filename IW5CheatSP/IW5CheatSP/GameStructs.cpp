@@ -7,3 +7,5 @@ color_s::color_s(int r, int g, int b, int a) {
 	this->A = a;
 }
 
+scrVmPub_t * scrVmPub;
+

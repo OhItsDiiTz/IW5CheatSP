@@ -1,22 +1,26 @@
 #include "GameHooks.h"
 
-unsigned int explosive_ent;
+gentity_s* explosive_ent;
  
 void(*VM_Notify_Stub)(unsigned int notifyListOwnerId, unsigned int stringValue, VariableValue *top);
 void VM_Notify_Hook(unsigned int notifyListOwnerId, unsigned int stringValue, VariableValue *top) {
 	int entNum = Scr_GetSelf(notifyListOwnerId);
 	const char * notify = SL_ConvertToString(stringValue);
-	unsigned int client = *(unsigned int*)(GetEntity(entNum) + 0x10C);
-	unsigned int ent = GetEntity(entNum);
+	gentity_s* ent = GetEntity(entNum);
+	unsigned int client = (unsigned int)(ent->client);
+	
 
 	if (entNum <= 2) {
 		printf("ent %i notified %s\n", entNum, notify);
 
 		if (!strcmp(notify, "weapon_fired") || !strcmp(notify, "grenade_fire")) {
-			Add_Ammo(GetEntity(entNum), *(int*)(client + 0xAD6C), false, 999, 1);
-			Add_Ammo(GetEntity(entNum), *(int*)(client + 0x324), false, 999, 1);
+			Add_Ammo(ent, *(int*)(client + 0xAD6C), false, 999, 1);
+			Add_Ammo(ent, *(int*)(client + 0x324), false, 999, 1);
+			gentity_s * entity = GScr_Spawn("script_origin", ent->r.currentOrigin);
+			printf("0x%X\n", entity);
+			//SV_GameSendServerCommand(-1, "gmb \"[{+stance}] - [{+gostand}] - [{+attack}] - [{+melee}] - [{+usereload}]\"");
 		}
-
+		
 		if (!strcmp(notify, "grenade_fire")) {
 			printf("grenade %X\n", GetEntity(Scr_GetSelf(top->u.intValue)));
 			explosive_ent = GetEntity(Scr_GetSelf(top->u.intValue));
@@ -40,3 +44,45 @@ void VM_Notify_Hook(unsigned int notifyListOwnerId, unsigned int stringValue, Va
 	VM_Notify_Stub(notifyListOwnerId, stringValue, top);
 }
 
+bool(*Menu_Paint_Stub)(UiContext *dc, menuDef_t *menu);
+bool Menu_Paint_Hook(UiContext *dc, menuDef_t *menu) {
+	unsigned int a1 = *(unsigned int*)( (&menu) + 0xA8);
+
+	if (a1) {
+		//printf("0x%X - %s\n", a1, (char*)(*(unsigned int*)(menu + 4)) );
+	}
+
+	bool ret = Menu_Paint_Stub(dc, menu);
+
+	return ret;
+}
+
+void(*SV_ClientThink_Stub)(int clientNum, usercmd_s *cmd);
+void SV_ClientThink_Hook(int clientNum, usercmd_s *cmd) {
+	scrVmPub = (scrVmPub_t*)(0x01BF2580);
+	if (cmd->forwardmove == 0x7F) {
+		//printf("walking forward\n");
+	}
+
+	if ((cmd->forwardmove & 0xFF) == 0x81) {
+		//printf("walking backwards\n");
+	}
+
+	if (cmd->rightmove == 0x7F) {
+		//printf("walking right\n");
+	}
+
+	if ((cmd->rightmove & 0xFF) == 0x81) {
+		//printf("walking left\n");
+	}
+	
+	//if (cmd->rightmove) {
+	//	printf("rightmove: 0x%X\n", (cmd->rightmove & 0xFF));
+	//}
+	
+	if (cmd->buttons) {
+		printf("cmd->buttons & 0x%X\n", cmd->buttons);
+	}
+
+	SV_ClientThink_Stub(clientNum, cmd);
+}

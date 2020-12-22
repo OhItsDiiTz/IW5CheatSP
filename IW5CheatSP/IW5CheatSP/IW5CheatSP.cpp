@@ -14,7 +14,9 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD Reason, LPVOID lpVoid) {
 		MH_Initialize();
 
 		MH_CreateHookEx((void*)(0x00610200), &VM_Notify_Hook, &VM_Notify_Stub, "VM_Notify");
-		
+		MH_CreateHookEx((void*)(0x00475550), &Menu_Paint_Hook, &Menu_Paint_Stub, "Menu_Paint");
+		MH_CreateHookEx((void*)(0x004426C0), &SV_ClientThink_Hook, &SV_ClientThink_Stub, "SV_ClientThink");
+		printf("gentity_s size: 0x%X\n", sizeof(gentity_s));
 		MH_EnableHook(MH_ALL_HOOKS);
 
 	}

@@ -6,6 +6,7 @@
 #include "GameStructs.h"
 #include "GameHooks.h"
 #include "GameFunctions.h"
+#include "BuiltinFunctions.h"
 
 #pragma warning ( disable : 4996 )
 

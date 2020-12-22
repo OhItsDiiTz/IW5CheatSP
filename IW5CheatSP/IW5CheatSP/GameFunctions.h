@@ -4,18 +4,27 @@
 template <typename T> T(*GameCall(unsigned int address))(...);
 
 struct game_hudelem_s;
+struct gentity_s;
+struct scr_entref_t;
+
+void Scr_AddString(const char *value);
+void Scr_AddConstString(unsigned int value);
+void Scr_AddVector(const float *value);
+void Scr_AddInt(int value);
+
+unsigned int SL_GetString(const char *str, unsigned int user);
+
+void Scr_ClearOutParams();
 
 unsigned int Scr_GetSelf(unsigned int threadId);
 const char * SL_ConvertToString(unsigned int stringValue);
-unsigned int GetEntity(int entNum);
-unsigned int Add_Ammo(unsigned int ent, int weapon, bool isAlternate, int count, int fillClip);
+gentity_s* GetEntity(int entNum);
+unsigned int Add_Ammo(gentity_s* ent, int weapon, bool isAlternate, int count, int fillClip);
 void G_SetModel(unsigned int ent, const char *modelName);
-int G_EntLinkTo(unsigned int ent, unsigned int parent, unsigned int tagName);
-void G_InitPlayerLinkAngles(unsigned int ent);
+int G_EntLinkTo(gentity_s* ent, gentity_s* parent, unsigned int tagName);
+void G_InitPlayerLinkAngles(gentity_s* ent);
 
 game_hudelem_s * HudElem_Alloc(int clientNum);
 
-
-
-
+void SV_GameSendServerCommand(int clientNum, const char *text);
 
