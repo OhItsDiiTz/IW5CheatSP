@@ -11,10 +11,14 @@ void Scr_AddString(const char *value);
 void Scr_AddConstString(unsigned int value);
 void Scr_AddVector(const float *value);
 void Scr_AddInt(int value);
+void Scr_AddEntity(gentity_s *ent);
+void Scr_AddFloat(float value);
 
 unsigned int SL_GetString(const char *str, unsigned int user);
 
 void Scr_ClearOutParams();
+
+void AngleVectors(const float *angles, float *forward, float *right, float *up);
 
 unsigned int Scr_GetSelf(unsigned int threadId);
 const char * SL_ConvertToString(unsigned int stringValue);

@@ -365,11 +365,72 @@ union some_ent_union {
 	blend_ent_t blend;
 };
 
+struct playerEvents_t {
+	int eventSequence;
+	int events[4];
+	unsigned int eventParms[4];
+	int oldEventSequence;
+	int timeADSCameUp;
+};
+
+
+struct playerState_s {
+	int commandTime;
+	int pm_type;
+	int pm_time;
+	int pm_flags;
+	int otherFlags;
+	int linkFlags;
+	int bobCycle;
+	float origin[3];
+	float velocity[3];
+	int grenadeTimeLeft;
+	int throwbackGrenadeOwner;
+	int throwbackGrenadeTimeLeft;
+	int throwbackWeapon;
+	int remoteEyesEnt;
+	int remoteEyesTagname;
+	int remoteControlEnt;
+	int vehicleViewCalcEnt;
+	int foliageSoundTime;
+	int gravity;
+	int speed;
+	float delta_angles[3];
+	int groundEntityNum;
+	float vLadderVec[3];
+	int jumpTime;
+	float jumpOriginZ;
+	int legsTimer;
+	int legsAnim;
+	int torsoTimer;
+	int torsoAnim;
+	int legsAnimDuration;
+	int torsoAnimDuration;
+	int damageTimer;
+	int damageDuration;
+	int flinchYawAnim;
+	int movementDir;
+	int eFlags;
+	playerEvents_t pe;
+	int unpredictableEventSequence;
+	int unpredictableEventSequenceOld;
+	int unpredictableEvents[4];
+	unsigned int unpredictableEventParms[4];
+	int clientNum;
+	int viewmodelIndex;
+	float viewangles[3];
+};
+
+struct gclient_s {
+	playerState_s ps;
+
+};
+
 struct gentity_s
 {
 	entityState_s s;
 	entityShared_t r;
-	void *client;
+	gclient_s *client;
 	void *actor;
 	void *sentient;
 	void *vehicle;
@@ -1065,4 +1126,5 @@ public:
 
 
 extern scrVmPub_t * scrVmPub;
+extern gentity_s * g_entities;
 

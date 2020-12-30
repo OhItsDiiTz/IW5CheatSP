@@ -21,12 +21,24 @@ void Scr_AddInt(int value) {
 	GameCall<void>(0x0042DE20)(value);
 }
 
+void Scr_AddEntity(gentity_s *ent) {
+	GameCall<void>(0x0043C860)(ent);
+}
+
+void Scr_AddFloat(float value) {
+	GameCall<void>(0x005349D0)(value);
+}
+
 unsigned int SL_GetString(const char *str, unsigned int user) {
 	return GameCall<unsigned int>(0x004860A0)(str, user);
 }
 
 void Scr_ClearOutParams() {
 	GameCall<void>(0x004E4700)();
+}
+
+void AngleVectors(const float *angles, float *forward, float *right, float *up) {
+	GameCall<void>(0x0041CA80)(angles, forward, right, up);
 }
 
 unsigned int Scr_GetSelf(unsigned int threadId) {

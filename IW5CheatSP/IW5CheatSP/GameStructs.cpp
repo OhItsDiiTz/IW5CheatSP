@@ -8,4 +8,5 @@ color_s::color_s(int r, int g, int b, int a) {
 }
 
 scrVmPub_t * scrVmPub;
+gentity_s * g_entities;
 
