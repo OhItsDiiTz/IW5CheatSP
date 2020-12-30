@@ -7,22 +7,21 @@ void VM_Notify_Hook(unsigned int notifyListOwnerId, unsigned int stringValue, Va
 	int entNum = Scr_GetSelf(notifyListOwnerId);
 	const char * notify = SL_ConvertToString(stringValue);
 	gentity_s* ent = GetEntity(entNum);
-	unsigned int client = (unsigned int)(ent->client);
+	gclient_s * client = ent->client;
 
 	if (entNum <= 2) {
 		printf("ent %i notified %s\n", entNum, notify);
 
 		if (!strcmp(notify, "weapon_fired") || !strcmp(notify, "grenade_fire")) {
-			Add_Ammo(ent, *(int*)(client + 0xAD6C), false, 999, 1);
-			Add_Ammo(ent, *(int*)(client + 0x324), false, 999, 1);
+			Add_Ammo(ent, client->pers.cmd.weapon, false, 999, 1);
+			Add_Ammo(ent, client->ps.weapCommon.offHand, false, 999, 1);
 
-			//com_plasticcase_friendly
-			for (int i = 0; i < 2048;i++) {
-				if (g_entities[i].classname == *(unsigned __int16*)(0x015C6124)) {
-					printf("content: 0x%X\n", g_entities[i].r.contents);
-					break;
-				}
-			}
+			//com_plasticcase_friendly - 0x8030200 (solid flag)
+			//for (int i = 0; i < 2048;i++) {
+			//	if (g_entities[i].classname == *(unsigned __int16*)(0x015C6124)) {
+			//		printf("content: 0x%X\n", g_entities[i].r.contents);
+			//	}
+			//}
 			
 			if (noclip_ent == NULL) {
 				noclip_ent = GScr_Spawn("script_origin", ent->r.currentOrigin);

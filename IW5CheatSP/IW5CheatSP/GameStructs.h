@@ -2,7 +2,9 @@
 #include "IW5CheatSP.h"
 
 
+struct gentity_s;
 struct VariableValue;
+struct hudelem_s;
 
 struct UiContext {
 
@@ -373,6 +375,129 @@ struct playerEvents_t {
 	int timeADSCameUp;
 };
 
+struct SprintState {
+	int sprintButtonUpRequired;
+	int sprintDelay;
+	int lastSprintStart;
+	int lastSprintEnd;
+	int sprintStartMaxLength;
+};
+
+struct MantleState {
+	float yaw;
+	int timer;
+	int transIndex;
+	int flags;
+};
+
+struct PlayerActiveWeaponState {
+	int weapAnim;
+	int weaponTime;
+	int weaponDelay;
+	int weaponRestrictKickTime;
+	int weaponState;
+	int weapHandFlags;
+	unsigned int weaponShotCount;
+};
+
+struct PlayerEquippedWeaponState {
+	bool usedBefore;
+	bool dualWielding;
+	bool inAltMode;
+	bool needsRechamber[2];
+	int zoomLevelIndex;
+};
+
+struct GlobalAmmo {
+	int ammoType;
+	int ammoCount;
+};
+
+struct ClipAmmo {
+	int clipIndex;
+	int ammoCount[2];
+};
+
+
+struct PlayerWeaponCommonState {
+	int offHand;
+	int offhandPrimary;
+	int offhandSecondary;
+	int weapon;
+	int weapFlags;
+	float fWeaponPosFrac;
+	float aimSpreadScale;
+	int adsDelayTime;
+	int spreadOverride;
+	int spreadOverrideState;
+	float fAimSpreadMovementScale;
+	int lastWeaponHand; //PlayerHandIndex
+	GlobalAmmo ammoNotInClip[15];
+	ClipAmmo ammoInClip[15];
+	int weapLockFlags;
+	int weapLockedEntnum;
+	float weapLockedPos[3];
+	int weaponIdleTime;
+	int forcedViewAnimWeapon;
+	int forcedViewAnimWeaponState;
+	int forcedViewAnimOriginalWeapon;
+};
+
+struct color_s {
+	char R, G, B, A;
+	color_s(int r, int g, int b, int a);
+};
+
+struct hudelem_s {
+	int type;
+	float x;
+	float y;
+	float z;
+	int targetEntNum;
+	float fontScale;
+	float fromFontScale;
+	int fontScaleStartTime;
+	int fontScaleTime;
+	int font;
+	int alignOrg;
+	int alignScreen;
+	color_s color;
+	color_s fromColor;
+	int fadeStartTime;
+	int fadeTime;
+	int label;
+	int width;
+	int height;
+	int materialIndex;
+	int fromWidth;
+	int fromHeight;
+	int scaleStartTime;
+	int scaleTime;
+	float fromX;
+	float fromY;
+	int fromAlignOrg;
+	int fromAlignScreen;
+	int moveStartTime;
+	int moveTime;
+	int time;
+	int duration;
+	float value;
+	int text;
+	float sort;
+	color_s glowColor;
+	int fxBirthTime;
+	int fxLetterTime;
+	int fxDecayStartTime;
+	int fxDecayDuration;
+	int soundID;
+	int flags;
+};
+
+
+struct game_hudelem_s {
+	hudelem_s elem;
+	int clientNum;
+};
 
 struct playerState_s {
 	int commandTime;
@@ -419,15 +544,175 @@ struct playerState_s {
 	int clientNum;
 	int viewmodelIndex;
 	float viewangles[3];
+	int viewHeightTarget;
+	float viewHeightCurrent;
+	int viewHeightLerpTime;
+	int viewHeightLerpTarget;
+	int viewHeightLerpDown;
+	float viewAngleClampBase[2];
+	float viewAngleClampRange[2];
+	float viewAngleResistMax[2];
+	float viewAngleResistMin[2];
+	int damageEvent;
+	int damageYaw;
+	int damagePitch;
+	int damageCount;
+	int damageFlags;
+	int stats[4];
+	float proneDirection;
+	float proneDirectionPitch;
+	float proneTorsoPitch;
+	int viewlocked; //ViewLockTypes
+	int viewlocked_entNum;
+	float linkAngles[3];
+	float linkWeaponAngles[3];
+	int linkWeaponEnt;
+	int loopSound;
+	int vehicleType;
+	float groundTiltAngles[3];
+	int cursorHint;
+	int cursorHintString;
+	int cursorHintEntIndex;
+	int cursorHintDualWield;
+	int motionTrackerEnabled;
+	int locationSelectionInfo;
+	SprintState sprintState;
+	float holdBreathScale;
+	int holdBreathTimer;
+	float moveSpeedScaleMultiplier;
+	MantleState mantleState;
+	PlayerActiveWeaponState weapState[2];
+	int weaponsEquipped[15];
+	PlayerEquippedWeaponState weapEquippedData[15];
+	PlayerWeaponCommonState weapCommon;
+	int meleeChargeDist;
+	int meleeChargeTime;
+	float meleeChargeYaw;
+	unsigned int perks[2];
+	unsigned int perkSlots[9];
+	int actionSlotType[4]; //ActionSlotType
+	int actionSlotParam[4];
+	int weaponHudIconOverrides[6];
+	int animScriptedType;
+	int shellshockIndex;
+	int shellshockTime;
+	int shellshockDuration;
+	float viewKickScale;
+	float dofNearStart;
+	float dofNearEnd;
+	float dofFarStart;
+	float dofFarEnd;
+	float dofNearBlur;
+	float dofFarBlur;
+	float dofViewmodelStart;
+	float dofViewmodelEnd;
+	hudelem_s elem[256];
+	int recoilScale;
+	int diveDirection;
+	int stunTime;
 };
+
+struct clientPersistent_t {
+	int connected; //clientConnected_t
+	usercmd_s cmd;
+	usercmd_s oldcmd;
+	int maxHealth;
+	float moveSpeedScaleMultiplier;
+	int motionTrackerEnabled;
+	char playerName[32];
+};
+
+struct viewClamp {
+	float start[2];
+	float current[2];
+	float goal[2];
+};
+
+
+struct viewClampState {
+	viewClamp min;
+	viewClamp max;
+	viewClamp resistMax;
+	viewClamp resistMin;
+	float accelTime;
+	float decelTime;
+	float totalTime;
+	float startTime;
+};
+
 
 struct gclient_s {
 	playerState_s ps;
-
+	clientPersistent_t pers;
+	int flags;
+	int buttons;
+	int oldbuttons;
+	int latched_buttons;
+	int buttonsSinceLastFrame;
+	float fGunPitch;
+	float fGunYaw;
+	float fGunXOfs;
+	float fGunYOfs;
+	float fGunZOfs;
+	int damage_blood;
+	int damage_stun;
+	float damage_from[3];
+	int damage_fromWorld;
+	float currentAimSpreadScale;
+	gentity_s *pHitHitEnt;
+	EntHandle pLookatEnt;
+	float prevLinkedInvQuat[4];
+	bool prevLinkAnglesSet;
+	bool link_rotationMovesEyePos;
+	bool link_doCollision;
+	bool link_useTagAnglesForViewAngles;
+	bool link_useBaseAnglesForViewClamp;
+	float linkAnglesFrac;
+	viewClampState link_viewClamp;
+	int inControlTime;
+	int lastTouchTime;
+	EntHandle useHoldEntity;
+	int useHoldTime;
+	int useButtonDone;
+	int bDisableAutoPickup;
+	float criticalBulletDamageDist;
+	int invulnerableDuration;
+	int invulnerableExpireTime;
+	bool invulnerableActivated;
+	bool invulnerableEnabled;
+	bool deathShieldEnabled;
+	char attackerCount;
+	float attackerAccuracyMultiplier;
+	float accuracyDistMultiplier;
+	float damageMultiplier;
+	bool playerMoved;
+	float playerLOSCheckPos[2];
+	float playerLOSCheckDir[2];
+	int playerLOSPosTime;
+	int playerADSTargetTime;
+	float futurePos[3];
+	int futurePosUpdateTime;
+	int lastWeapon;
+	bool lastWeaponAltStatus;
+	int lastStowedWeapon;
+	bool previouslyFiring;
+	bool previouslyFiringLeftHand;
+	bool previouslyUsingNightVision;
+	bool groundEntChanged;
+	int groundTiltEntNum;
+	int hudElemLastAssignedSoundID;
+	int visionDuration[5];
+	char visionName[5][64];
+	void *weaponModel;
+	void *knifeModel;
+	int lastStand;
+	unsigned __int16 attachShieldTagName;
+	int shieldHealth;
+	int hintForcedType;
+	int hintForcedString;
 };
 
-struct gentity_s
-{
+struct gentity_s {
 	entityState_s s;
 	entityShared_t r;
 	gclient_s *client;
@@ -476,16 +761,489 @@ struct gentity_s
 	gentity_s *nextFree;
 };
 
+struct ai_transition_cmd_t {
+	int eTransition;
+	int eState;
+};
+
+struct ActorShoot {
+	float accuracy;
+	float playerSightAccuracy;
+	unsigned int missCount;
+	unsigned int hitCount;
+	float debugLastAccuracy;
+	int lastShotTime;
+	bool lastCanShootEnemyResult;
+	int lastCanShootEnemyTime;
+};
+
+struct ActorOrientation {
+	float fDesiredBodyYaw;
+	float fLookPitch;
+	float fLookYaw;
+	float maxFaceEnemyDistSq;
+	char relativeDir;
+	char prevRelativeDir;
+	bool faceMotion;
+	bool gunBlockedByWall;
+	bool lockScriptOrient;
+	float vLookForward[3];
+	float vLookRight[3];
+	float vLookUp[3];
+};
+
+struct ai_orient_t{
+	int eMode;
+	float fDesiredLookPitch;
+	float fDesiredLookYaw;
+	float fDesiredBodyYaw;
+};
+
+struct ActorPainDeath {
+	int iPainTime;
+	int minPainDamage;
+	bool allowPain;
+	bool allowDeath;
+	bool delayedDeath;
+	bool dieQuietly;
+	bool forceRagdollImmediate;
+	int iDamageTaken;
+	int iDamageYaw;
+	float damageDir[3];
+	unsigned __int16 damageHitLoc;
+	unsigned __int16 damageWeapon;
+	int damageMOD;
+};
+
+struct ActorProne {
+	unsigned __int16 animProneLow;
+	unsigned __int16 animProneLevel;
+	unsigned __int16 animProneHigh;
+	bool bProneOK;
+	char feetDirection;
+	float fInvProneAnimLowPitch;
+	float fInvProneAnimHighPitch;
+	float fProneLastDiff;
+};
+
+struct actor_prone_info_s {
+	bool bCorpseOrientation;
+	bool orientPitch;
+	bool prone;
+	int iProneTime;
+	int iProneTrans;
+	float fBodyHeight;
+	float fBodyPitch;
+	float fWaistPitch;
+};
+
+struct ActorCachedInfo {
+	int time;
+	float pos[3];
+	float dir[3];
+};
+
+struct ActorLookAtInfo {
+	float vLookAtPos[3];
+	float fLookAtTurnAngle;
+	float fLookAtTurnSpeed;
+	float fLookAtTurnAccel;
+	float fLookAtAnimYawLimit;
+	float fLookAtYawLimit;
+	unsigned __int16 animLookAtStraight;
+	unsigned __int16 animLookAtLeft;
+	unsigned __int16 animLookAtRight;
+	bool bDoLookAt;
+	bool bLookAtSetup;
+	int iLookAtBlendEndTime;
+	float fLookAtAnimBlendRate;
+	float fLookAtLimitBlendRate;
+};
+
+struct ActorDelayedWeaponDrop {
+	float matrix[4][3];
+	int time;
+	unsigned __int16 tagName;
+	int state; //DelayedWeapDropState
+	int weapon;
+};
+
+struct ActorCoverArrivalInfo {
+	int arrivalNotifyRequested;
+	int animscriptOverrideRunTo;
+	float animscriptOverrideRunToPos[3];
+	float offsetIncrement[2];
+	int offsetAdjustCount;
+	float arrivalYaw;
+	EntHandle scriptedArrivalEnt;
+};
+
+struct ActorNodeSelect {
+	int numCoverNodesInGoal;
+	int iPotentialCoverNodeCount;
+	int iPotentialAmbushNodeCount;
+	int nextFindBestCoverTime;
+	bool requestDifferentCover;
+	bool keepClaimedNode;
+	bool keepClaimedNodeIfValid;
+	bool keepNodeDuringScriptedAnim;
+	bool doDangerReact;
+	int dangerReactGoalTime;
+	int dangerReactDuration;
+	float engageMinDist;
+	float engageMinFalloffDist;
+	float engageMaxDist;
+	float engageMaxFalloffDist;
+};
+
+struct ActorSight {
+	float fovDot;
+	float fovDotBusy;
+	float fMaxSightDistSqrd;
+	int latency;
+	bool ignoreCloseFoliage;
+	bool lastEnemySightPosValid;
+	float lastEnemySightPos[3];
+	float anglesToLikelyEnemyPath[3];
+	int faceLikelyEnemyPathNeedCheckTime;
+	int faceLikelyEnemyPathNeedRecalculateTime;
+	void *faceLikelyEnemyPathNode;
+	float upAimLimit;
+	float downAimLimit;
+	float rightAimLimit;
+	float leftAimLimit;
+};
+
+struct vis_cache_t {
+	bool bVisible;
+	int iLastUpdateTime;
+	int iLastVisTime;
+};
+
+
+struct sentient_info_t {
+	vis_cache_t VisCache;
+	int iLastAttackMeTime;
+	int lastKnownPosTime;
+	int attackTime;
+	bool surprised;
+	float vLastKnownPos[3];
+	void *pLastKnownNode;
+};
+
+struct ai_suppression_t {
+	int iTime;
+	void *pSuppressor;
+	float clipPlane[3];
+	int movementOnly;
+};
+
+struct ActorSuppression {
+	int ignoreSuppression;
+	int suppressionWait;
+	int suppressionDuration;
+	int suppressionStartTime;
+	float suppressionMeter;
+};
+
+struct ActorCombat {
+	int ambushStartTime;
+	int exposedStartTime;
+	int exposedDuration;
+	bool provideCoveringFire;
+	bool doingAmbush;
+	bool currentAmbushNodeInvalid;
+	bool allAmbushNodesFailed;
+	int combatMode;
+	int alertLevel;
+	bool damageShield;
+	bool noGrenadeReturnThrow;
+	bool noAttackerAccuracyMod;
+	float frontShieldAngleCos;
+};
+
+struct potential_threat_t {
+	bool isEnabled;
+	float direction[2];
+};
+
+struct SentientHandle {
+	unsigned __int16 number;
+	unsigned __int16 infoIndex;
+};
+
+struct ActorSecondaryTarget {
+	EntHandle entity;
+	float dirToEnt[2];
+	float distToEnt;
+	void *node;
+};
+
+
+struct ActorThreat {
+	bool hasThreateningEnemy;
+	bool allEnemiesInSimilarDir;
+	bool newEnemyReaction;
+	bool ignoreExplosionEvents;
+	bool bPacifist;
+	int iPacifistWait;
+	potential_threat_t potentialThreat;
+	int threatUpdateTime;
+	float footstepDetectDistSq;
+	float footstepDetectDistWalkSq;
+	float footstepDetectDistSprintSq;
+	float reactionTargetPos[3];
+	float newEnemyReactionDistSq;
+	float highlyAwareRadius;
+	SentientHandle pFavoriteEnemy;
+	int numSecondaryTarget;
+	ActorSecondaryTarget secondaryTargets[2];
+};
+
+struct ActorGrenade {
+	float grenadeAwareness;
+	int grenadeExistTime;
+	EntHandle pGrenade;
+	int iGrenadeWeapon;
+	unsigned __int16 GrenadeTossMethod;
+	bool bGrenadeTossValid;
+	bool bGrenadeTargetValid;
+	bool grenadeTossWithBounce;
+	int iGrenadeAmmo;
+	float vGrenadeTossPos[3];
+	float vGrenadeTargetPos[3];
+	float vGrenadeTossVel[3];
+	float pickupPos[3];
+};
+
+struct ActorTurret {
+	gentity_s *pTurret;
+	unsigned __int16 turretAnim;
+	char turretAnimSet;
+};
+
+struct scr_animscript_t {
+	int func;
+	int endFunc;
+	unsigned __int16 name;
+private:
+	char __padding000[2];
+};
+
+struct actor_physics_t {
+	float vOrigin[3];
+	float vVelocity[3];
+	unsigned __int16 groundEntNum;
+	int iFootstepTimer;
+	int bHasGroundPlane;
+	float groundplaneSlope;
+	int iSurfaceType;
+	float vWishDelta[3];
+	int bIsAlive;
+	int iEntNum;
+	int ePhysicsType;
+	float fGravity;
+	int iMsec;
+	Bounds bounds;
+	bool prone;
+	bool stepMove;
+	int iTraceMask;
+	int foliageSoundTime;
+	int iNumTouch;
+	int iTouchEnts[32];
+	int iHitEntnum;
+	float vHitOrigin[2];
+	float vHitNormal[2];
+	char bStuck;
+	char bDeflected;
+	bool pathGoingDown;
+	int stairsState;
+};
+
+struct ActorNavigation {
+	float fWalkDist;
+	float fWalkDistFacingMotion;
+	bool isInBadPlace;
+	char badplaceRecheckPathLen;
+	float badPlaceAwareness;
+};
+
+struct pathpoint_t {
+	float vOrigPoint[3];
+	float fDir2D[2];
+	float fOrigLength;
+	int iNodeNum;
+};
+
+
+struct path_t {
+	pathpoint_t pts[32];
+	char wPathLen;
+	char wOrigPathLen;
+	char wDodgeCount;
+	char wNegotiationStartNode;
+	char lookaheadNextNode;
+	char pathChangeNotifyNode;
+	__int16 wDodgeEntity;
+	float vFinalGoal[3];
+	float vStartPos[3];
+	float lookaheadDir[3];
+	float lookaheadPos[3];
+	float fLookaheadDist;
+	float fLookaheadAmount;
+	float fLookaheadDistToNextNode;
+	int minLookAheadNodes;
+	int flags;
+	int iPathTime;
+	int iPathClearedTime;
+	int eTeam;
+	float fCurrLength;
+	float vCurrPoint[3];
+	int iPathEndTime;
+	float pathEndAnimDistSq;
+	bool pathEndAnimNotified;
+	bool lookaheadHitsStairs;
+	bool useChokePoints;
+	float pathChangeTracePos[2];
+	int randomPercent;
+};
+
+struct path_trim_t {
+	int iIndex;
+	int iDelta;
+};
+
+struct actor_goal_s {
+	float pos[3];
+	float radius;
+	float height;
+	void *node;
+	gentity_s *volume;
+};
+
+
+struct actor_s {
+	gentity_s *ent;
+	void *sentient;
+	int species; //AISpecies
+	int talkToSpecies;
+	int eState[6]; //ai_state_t
+	int eSubState[6]; //ai_substate_t
+	unsigned int stateLevel;
+	int iStateTime;
+	int preThinkTime;
+	ai_transition_cmd_t StateTransitions[13];
+	unsigned int transitionCount;
+	int eSimulatedState[6];
+	unsigned int simulatedStateLevel;
+	unsigned __int16 properName;
+	unsigned __int16 weaponName;
+	ActorShoot shoot;
+	ActorOrientation orientation;
+	ai_orient_t CodeOrient;
+	ai_orient_t ScriptOrient;
+	ActorPainDeath painDeath;
+	ActorProne prone;
+	actor_prone_info_s ProneInfo;
+	ActorCachedInfo eyeInfo;
+	ActorCachedInfo muzzleInfo;
+	ActorLookAtInfo lookAtInfo;
+	ActorDelayedWeaponDrop weapDrops[2];
+	ActorCoverArrivalInfo arrivalInfo;
+	ActorNodeSelect nodeSelect;
+	ActorSight sight;
+	sentient_info_t sentientInfo[50];
+	ai_suppression_t Suppressant[4];
+	ActorSuppression suppression;
+	ActorCombat combat;
+	ActorThreat threat;
+	ActorGrenade grenade;
+	ActorTurret turret;
+	int eAllowedStances;
+	unsigned __int16 AnimScriptHandle;
+	scr_animscript_t *pAnimScriptFunc;
+	scr_animscript_t *pPrevAnimScriptFunc;
+	scr_animscript_t *pAttackScriptFunc;
+	scr_animscript_t *pRequestedScript;
+	scr_animscript_t AnimScriptSpecific;
+	int eTraverseMode;
+	char moveMode;
+	bool useCombatScriptAtCover;
+	bool prevAnimScriptTerminated;
+	bool safeToChangeScript;
+	bool bUseGoalWeight;
+	bool bCanClimbLadders;
+	int eAnimMode;
+	int eScriptSetAnimMode;
+	unsigned __int16 anim_pose;
+	actor_physics_t Physics;
+	ActorNavigation navigation;
+	path_t Path;
+	path_trim_t TrimInfo;
+	float fInterval;
+	int pathWaitTime;
+	int iTeamMoveWaitTime;
+	int iTeamMoveDodgeTime;
+	int stoppedWaitStartTime;
+	EntHandle stoppedWaitEnt;
+	actor_s *pPileUpActor;
+	gentity_s *pPileUpEnt;
+	int bDontAvoidPlayer;
+	float sideMove;
+	bool noDodgeMove;
+	int mayMoveTime;
+	float nodeOffsetDist;
+	float nodeOffsetPos[3];
+	float prevMoveDir[2];
+	float leanAmount;
+	float turnRate;
+	EntHandle pCloseEnt;
+	int moveHistoryIndex;
+	bool moveHistoryConsistent;
+	float moveHistory[10][2];
+	actor_goal_s codeGoal;
+	int codeGoalSrc;
+	actor_goal_s scriptGoal;
+	EntHandle scriptGoalEnt;
+	int scriptGoalEntLastUpdate;
+	int scriptGoalEntUpdateInterval;
+	float pathEnemyLookahead;
+	float pathEnemyFightDist;
+	float meleeAttackDist;
+	bool useEnemyGoal;
+	bool useMeleeAttackSpot;
+	bool goalPosChanged;
+	bool commitToFixedNode;
+	bool ignoreForFixedNodeSafeCheck;
+	bool fixedNode;
+	float fixedNodeSafeRadius;
+	float fixedNodeSafeVolumeRadiusSq;
+	EntHandle fixedNodeSafeVolume;
+	int bDropWeapon;
+	int bDrawOnCompass;
+	int iTraceCount;
+	int iUseHintString;
+	char useable;
+	bool ignoreTriggers;
+	bool pushable;
+	bool script_pushable;
+	bool inuse;
+	int shieldHealth;
+	unsigned __int16 shieldName;
+	unsigned __int16 potentialCoverNode[10];
+	unsigned __int16 potentialAmbushNode[32];
+	const char *pszDebugInfo;
+};
 
 
 struct level_locals_t {
-	void *clients;
-	void *gentities;
+	gclient_s *clients;
+	gentity_s *gentities;
 	int num_entities;
-	void *firstFreeEnt;
-	void *lastFreeEnt;
+	gentity_s *firstFreeEnt;
+	gentity_s *lastFreeEnt;
 	void *sentients;
-	void *actors;
+	actor_s *actors;
 	void *vehicles;
 	void *turrets;
 	int initializing;
@@ -500,6 +1258,7 @@ struct level_locals_t {
 	int actorCorpseCount;
 	int actorCount;
 };
+
 struct scrVarPub_t {
 	const char *fieldBuffer;
 	bool evaluate;
@@ -1049,62 +1808,6 @@ struct WeaponDef {
 	void *stowOffsetModel;
 };
 
-
-struct color_s {
-	char R, G, B, A;
-	color_s(int r, int g, int b, int a);
-};
-
-struct hudelem_s {
-	int type;
-	float x;
-	float y;
-	float z;
-	int targetEntNum;
-	float fontScale;
-	float fromFontScale;
-	int fontScaleStartTime;
-	int fontScaleTime;
-	int font;
-	int alignOrg;
-	int alignScreen;
-	color_s color;
-	color_s fromColor;
-	int fadeStartTime;
-	int fadeTime;
-	int label;
-	int width;
-	int height;
-	int materialIndex;
-	int fromWidth;
-	int fromHeight;
-	int scaleStartTime;
-	int scaleTime;
-	float fromX;
-	float fromY;
-	int fromAlignOrg;
-	int fromAlignScreen;
-	int moveStartTime;
-	int moveTime;
-	int time;
-	int duration;
-	float value;
-	int text;
-	float sort;
-	color_s glowColor;
-	int fxBirthTime;
-	int fxLetterTime;
-	int fxDecayStartTime;
-	int fxDecayDuration;
-	int soundID;
-	int flags;
-};
-
-
-struct game_hudelem_s {
-	hudelem_s elem;
-	int clientNum;
-};
 
 
 struct DBFile {
